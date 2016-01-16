@@ -18,3 +18,9 @@
 .dub
 docs.json
 __dummy.html
+
+# The executable itself
+vibed-zmq
+
+# Emacs
+*~
