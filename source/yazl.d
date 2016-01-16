@@ -4,7 +4,7 @@
 /// - https://github.com/kyllingstad/zmqd (for @safe-safety)
 /// - https://github.com/iccodegr/zmq.d (for vibe.d concurrency)
 ///
-/// Requires vibe.d. Only particularly useful *within* the convines
+/// Requires vibe.d. Only particularly useful *within* the confines
 /// of vibe.d. 
 
 module yazl;
