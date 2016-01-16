@@ -2,8 +2,7 @@ import vibe.core.core : runTask;
 import vibe.core.task : Task;
 import core.time : msecs;
 
-ubyte[][] extractHeader(Sock)(ref Sock sock) if (
-        is(ubyte[] == typeof(Sock.recv())))
+ubyte[][] extractHeader(Sock)(ref Sock sock) if (is(ubyte[] == typeof(Sock.recv())))
 {
     ubyte[][] ret;
     ubyte[] buf;
@@ -64,9 +63,8 @@ template hasContext(T)
 
 template hasQuit(T)
 {
-    enum hasQuit= is(typeof(T.init.quit) == bool);
+    enum hasQuit = is(typeof(T.init.quit) == bool);
 }
-
 
 static Task[] child_workers;
 void idleHandler()
@@ -78,7 +76,7 @@ void idleHandler()
 }
 
 static void routerHandler(alias workerFun, Universe)(ref Universe uni) if (
-    hasContext!Universe && hasQuit!Universe)
+        hasContext!Universe && hasQuit!Universe)
 {
     import std.algorithm : filter;
     import yazl : Context, Socket, SocketType;
@@ -105,9 +103,7 @@ static void routerHandler(alias workerFun, Universe)(ref Universe uni) if (
                 auto sock = new PrependSock!Socket(router_sock);
                 sock.linger = 100.msecs;
                 // workerFun(uni, sock);
-                child_workers ~= runTask({
-                        workerFun(uni, sock);
-                    });
+                child_workers ~= runTask({ workerFun(uni, sock); });
             }
         }
         exitEventLoop();
@@ -139,11 +135,11 @@ static void routerHandler(alias workerFun, Universe)(ref Universe uni) if (
 // worry about that step of zmq management on your own. The thinking
 // here is that, for the handler function is the same for either REP or
 // ROUTER sockets. 
-void simpleReqForwarder(Universe, SockType)(ref Universe uni, SockType sock)
-    if (hasContext!Universe)
+void simpleReqForwarder(Universe, SockType)(ref Universe uni, SockType sock) if (
+        hasContext!Universe)
 {
     import yazl : Socket, SocketType;
-        
+
     // You need to read all of the payload before you do anything
     // that might yield execution. 
     auto payload = sock.recvMultipart();
@@ -153,14 +149,18 @@ void simpleReqForwarder(Universe, SockType)(ref Universe uni, SockType sock)
     // there. If you create a socket in a worker, make double sure
     // that it gets cleaned up when you exit scope.
     auto fwd = new Socket(uni.context, SocketType.req);
-    scope(exit) { fwd.close(); }
+    scope (exit)
+    {
+        fwd.close();
+    }
     fwd.connect("ipc:///var/tmp/echo-inner.sock");
 
     fwd.sendMultipart(payload);
-        
+
     // Busy-waiting to allow the application to quit mid-recv.
     bool has_input = false;
-    while (! (has_input || uni.quit)) {
+    while (!(has_input || uni.quit))
+    {
         has_input = fwd.waitForInput(100.msecs);
     }
     if (!uni.quit)
@@ -169,7 +169,6 @@ void simpleReqForwarder(Universe, SockType)(ref Universe uni, SockType sock)
         sock.sendMultipart(fwded);
     }
 }
-
 
 struct AppUniverse
 {
