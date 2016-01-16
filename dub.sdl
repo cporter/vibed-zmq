@@ -1,0 +1,7 @@
+name "vibed-zmq"
+description "A simple vibe.d server application."
+copyright "Copyright © 2015, cp"
+authors "cp"
+dependency "vibe-d" version="~>0.7.23"
+dependency "zeromq" version="~>4.0.5"
+versions "VibeDefaultMain"
