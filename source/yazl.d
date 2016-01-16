@@ -8,6 +8,8 @@
 /// Requires vibe.d. Only particularly useful *within* the convines
 /// of vibe.d. 
 
+module yazl;
+
 
 import deimos.zmq.zmq;
 import core.time : Duration;
