@@ -65,17 +65,18 @@ class Context
 
     void close()
     {
-        int rc;
         foreach (sock; child_sockets)
         {
             sock.close();
         }
 
+        int rc;
         do
         {
             rc = trusted!zmq_ctx_destroy(handle);
         }
         while (-1 == rc && EINTR == errno);
+
         if (-1 == rc)
         {
             throw new ZMQException("Could not close context.");
@@ -163,8 +164,7 @@ class Socket
         assert(handle !is null, "getSockopt called with a null socket.");
         T tmp;
         size_t len = tmp.sizeof;
-        int rc;
-        rc = trusted!zmq_getsockopt(handle, sockopt, cast(void*)&tmp, &len);
+        int rc = trusted!zmq_getsockopt(handle, sockopt, cast(void*)&tmp, &len);
         if (0 != rc)
         {
             // We're only using hard-coded values with this API.
@@ -306,7 +306,7 @@ class Socket
     int recv(ubyte[] buf)
     {
         assert(canRead, "Socket does not have data to read.");
-        int rc = 0;
+        int rc;
         do
         {
             rc = trusted!zmq_recv(handle, cast(void*) buf.ptr, buf.length, ZMQ_DONTWAIT);
