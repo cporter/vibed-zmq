@@ -5,9 +5,9 @@
 /// - https://github.com/iccodegr/zmq.d (for vibe.d concurrency)
 ///
 /// Requires vibe.d. Only particularly useful *within* the confines
-/// of vibe.d. 
+/// of vibe.d.
 
-module yazl;
+module yazl.sock;
 
 import deimos.zmq.zmq;
 import core.time : Duration;
