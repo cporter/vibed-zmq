@@ -74,7 +74,6 @@ void idleHandler()
 static void routerHandler(alias workerFun, Universe)(auto ref Universe uni, Socket router_sock)
 {
     import vibe.core.task : InterruptException;
-    import vibe.core.core : exitEventLoop;
 
     try
     {
@@ -95,12 +94,11 @@ static void routerHandler(alias workerFun, Universe)(auto ref Universe uni, Sock
                 }
             }
         }
-        exitEventLoop();
     }
     catch (InterruptException ie)
     {
     }
-    foreach (i, ref child; child_workers)
+    foreach (ref child; child_workers)
     {
         child.terminate();
         child.join();

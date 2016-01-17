@@ -88,7 +88,7 @@ extern (C) private void handleSigterm(int signal)
 
 shared static this()
 {
-    import vibe.d : setIdleHandler, runTask;
+    import vibe.d : setIdleHandler, runTask, exitEventLoop;
     import std.functional : toDelegate;
     import core.sys.posix.signal : bsd_signal, SIGTERM, SIGINT;
     import yazl.router : routerHandler, idleHandler;
@@ -108,5 +108,6 @@ shared static this()
         router_sock.bind("ipc:///var/tmp/echo-outer.sock");
 
         routerHandler!simpleReqForwarder(static_universe, router_sock);
+        exitEventLoop();
     });
 }
